@@ -4,68 +4,129 @@ Sistem e-voting sederhana dengan skema database minimal dan pembagian role admin
 
 ---
 
-## Proposed Changes
+## Prerequisites
 
-### Database Layer
+### 1. Install Laravel Sanctum
+
+```bash
+composer require laravel/sanctum
+```
+
+Publish konfigurasi Sanctum:
+
+```bash
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+```
+
+Tambahkan trait `HasApiTokens` ke model `User`:
+
+```php
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable;
+}
+```
+
+---
+
+## Database Layer
+
+### Migration Order
 
 > [!IMPORTANT]
-> **Migration Order**: `classes` harus dibuat **sebelum** `users` karena ada foreign key dependency.
+> Urutan migration penting karena ada foreign key dependencies:
+>
+> 1. `classes` → harus sebelum `users`
+> 2. `candidates` → bebas
+> 3. `users` (modify) → setelah `classes`
+> 4. `votes` → setelah `users` dan `candidates`
 
-#### [NEW] [0001_01_01_000001_create_classes_table.php](file:///Users/fauzi/Playgrounds/lks/e-voting/database/migrations/0001_01_01_000001_create_classes_table.php)
+### Create Migrations
 
-Dibuat dengan timestamp sebelum users table.
+```bash
+# 1. Create classes table
+php artisan make:migration create_classes_table
 
-```php
-Schema::create('classes', function (Blueprint $table) {
-    $table->id();
-    $table->string('name');
-    $table->timestamps();
-});
+# 2. Create candidates table
+php artisan make:migration create_candidates_table
+
+# 3. Add fields to users table
+php artisan make:migration add_class_id_and_role_to_users_table
+
+# 4. Create votes table
+php artisan make:migration create_votes_table
 ```
 
 ---
 
-#### [NEW] [0001_01_01_000002_create_candidates_table.php](file:///Users/fauzi/Playgrounds/lks/e-voting/database/migrations/0001_01_01_000002_create_candidates_table.php)
+### Migration: `create_classes_table`
 
 ```php
-Schema::create('candidates', function (Blueprint $table) {
-    $table->id();
-    $table->string('name');
-    $table->timestamps();
-});
+public function up(): void
+{
+    Schema::create('classes', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->timestamps();
+    });
+}
 ```
 
 ---
 
-#### [MODIFY] [0001_01_01_000000_create_users_table.php](file:///Users/fauzi/Playgrounds/lks/e-voting/database/migrations/0001_01_01_000000_create_users_table.php)
+### Migration: `create_candidates_table`
 
-Tambah `class_id` dan `role` langsung di migration existing:
-
-```diff
- Schema::create('users', function (Blueprint $table) {
-     $table->id();
-     $table->string('name');
-     $table->string('email')->unique();
-     $table->timestamp('email_verified_at')->nullable();
-     $table->string('password');
-+    $table->foreignId('class_id')->nullable()->constrained()->nullOnDelete();
-+    $table->enum('role', ['admin', 'voter'])->default('voter');
-     $table->rememberToken();
-     $table->timestamps();
- });
+```php
+public function up(): void
+{
+    Schema::create('candidates', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->timestamps();
+    });
+}
 ```
 
 ---
 
-#### [NEW] [0001_01_01_000003_create_votes_table.php](file:///Users/fauzi/Playgrounds/lks/e-voting/database/migrations/0001_01_01_000003_create_votes_table.php)
+### Migration: `add_class_id_and_role_to_users_table`
 
 ```php
-Schema::create('votes', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('candidate_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
-    $table->timestamps();
-});
+public function up(): void
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->foreignId('class_id')->nullable()->after('password')
+              ->constrained()->nullOnDelete();
+        $table->enum('role', ['admin', 'voter'])->default('voter')
+              ->after('class_id');
+    });
+}
+
+public function down(): void
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->dropForeign(['class_id']);
+        $table->dropColumn(['class_id', 'role']);
+    });
+}
+```
+
+---
+
+### Migration: `create_votes_table`
+
+```php
+public function up(): void
+{
+    Schema::create('votes', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('candidate_id')->constrained()->cascadeOnDelete();
+        $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
+        $table->timestamps();
+    });
+}
 ```
 
 > [!NOTE]
@@ -73,97 +134,133 @@ Schema::create('votes', function (Blueprint $table) {
 
 ---
 
-### Models
+## Models
 
-| Model           | File                         | Relationships                        |
-| --------------- | ---------------------------- | ------------------------------------ |
-| `SchoolClass`   | `app/Models/SchoolClass.php` | hasMany(User)                        |
-| `Candidate`     | `app/Models/Candidate.php`   | hasMany(Vote)                        |
-| `Vote`          | `app/Models/Vote.php`        | belongsTo(Candidate, User)           |
-| `User` (modify) | `app/Models/User.php`        | belongsTo(SchoolClass), hasOne(Vote) |
+### Create Models
 
----
+```bash
+php artisan make:model SchoolClass
+php artisan make:model Candidate
+php artisan make:model Vote
+```
 
-### Middleware
-
-#### [NEW] [AdminMiddleware.php](file:///Users/fauzi/Playgrounds/lks/e-voting/app/Http/Middleware/AdminMiddleware.php)
-
-Membatasi akses hanya untuk user dengan `role === 'admin'`.
-
----
-
-### Controllers
-
-#### AuthController
-
-| Method       | Endpoint             | Auth     |
-| ------------ | -------------------- | -------- |
-| `register()` | POST `/api/register` | Public   |
-| `login()`    | POST `/api/login`    | Public   |
-| `logout()`   | POST `/api/logout`   | Required |
-
-#### ClassController
-
-| Method      | Endpoint                   | Auth   |
-| ----------- | -------------------------- | ------ |
-| `index()`   | GET `/api/classes`         | Public |
-| `store()`   | POST `/api/classes`        | Admin  |
-| `show()`    | GET `/api/classes/{id}`    | Public |
-| `update()`  | PUT `/api/classes/{id}`    | Admin  |
-| `destroy()` | DELETE `/api/classes/{id}` | Admin  |
-
-#### CandidateController
-
-| Method      | Endpoint                      | Auth   |
-| ----------- | ----------------------------- | ------ |
-| `index()`   | GET `/api/candidates`         | Public |
-| `store()`   | POST `/api/candidates`        | Admin  |
-| `show()`    | GET `/api/candidates/{id}`    | Public |
-| `update()`  | PUT `/api/candidates/{id}`    | Admin  |
-| `destroy()` | DELETE `/api/candidates/{id}` | Admin  |
-
-#### VoteController
-
-| Method      | Endpoint                 | Auth     |
-| ----------- | ------------------------ | -------- |
-| `store()`   | POST `/api/votes`        | Voter    |
-| `results()` | GET `/api/votes/results` | Public   |
-| `status()`  | GET `/api/votes/status`  | Required |
-
-#### UserController
-
-| Method    | Endpoint         | Auth     |
-| --------- | ---------------- | -------- |
-| `me()`    | GET `/api/user`  | Required |
-| `index()` | GET `/api/users` | Admin    |
+| Model           | Table        | Relationships                        |
+| --------------- | ------------ | ------------------------------------ |
+| `SchoolClass`   | `classes`    | hasMany(User)                        |
+| `Candidate`     | `candidates` | hasMany(Vote)                        |
+| `Vote`          | `votes`      | belongsTo(Candidate, User)           |
+| `User` (modify) | `users`      | belongsTo(SchoolClass), hasOne(Vote) |
 
 ---
 
-### Routes
+## Middleware
 
-#### [MODIFY] [api.php](file:///Users/fauzi/Playgrounds/lks/e-voting/routes/api.php)
+### Create Admin Middleware
+
+```bash
+php artisan make:middleware AdminMiddleware
+```
+
+Register di `bootstrap/app.php`:
 
 ```php
-// Public
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->alias([
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+    ]);
+})
+```
+
+---
+
+## Controllers
+
+### Create Controllers
+
+```bash
+php artisan make:controller Api/AuthController
+php artisan make:controller Api/ClassController --api
+php artisan make:controller Api/CandidateController --api
+php artisan make:controller Api/VoteController
+php artisan make:controller Api/UserController
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint               | Auth     | Description       |
+| ------ | ---------------------- | -------- | ----------------- |
+| POST   | `/api/register`        | Public   | Register user     |
+| POST   | `/api/login`           | Public   | Login             |
+| POST   | `/api/logout`          | Required | Logout            |
+| GET    | `/api/user`            | Required | Get current user  |
+| GET    | `/api/classes`         | Public   | List classes      |
+| POST   | `/api/classes`         | Admin    | Create class      |
+| GET    | `/api/classes/{id}`    | Public   | Get class         |
+| PUT    | `/api/classes/{id}`    | Admin    | Update class      |
+| DELETE | `/api/classes/{id}`    | Admin    | Delete class      |
+| GET    | `/api/candidates`      | Public   | List candidates   |
+| POST   | `/api/candidates`      | Admin    | Create candidate  |
+| GET    | `/api/candidates/{id}` | Public   | Get candidate     |
+| PUT    | `/api/candidates/{id}` | Admin    | Update candidate  |
+| DELETE | `/api/candidates/{id}` | Admin    | Delete candidate  |
+| POST   | `/api/votes`           | Voter    | Submit vote       |
+| GET    | `/api/votes/results`   | Public   | Get results       |
+| GET    | `/api/votes/status`    | Required | Check vote status |
+| GET    | `/api/users`           | Admin    | List all users    |
+
+---
+
+## Routes
+
+Edit file `routes/api.php`:
+
+```php
+<?php
+
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CandidateController;
+use App\Http\Controllers\Api\ClassController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\VoteController;
+use Illuminate\Support\Facades\Route;
+
+// Public routes (tanpa autentikasi)
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
 Route::get('/classes', [ClassController::class, 'index']);
 Route::get('/classes/{class}', [ClassController::class, 'show']);
+
 Route::get('/candidates', [CandidateController::class, 'index']);
 Route::get('/candidates/{candidate}', [CandidateController::class, 'show']);
+
 Route::get('/votes/results', [VoteController::class, 'results']);
 
-// Authenticated
+// Protected routes (memerlukan autentikasi)
 Route::middleware('auth:sanctum')->group(function () {
+    // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [UserController::class, 'me']);
+
+    // Voting
     Route::post('/votes', [VoteController::class, 'store']);
     Route::get('/votes/status', [VoteController::class, 'status']);
 
-    // Admin only
+    // Admin only routes
     Route::middleware('admin')->group(function () {
-        Route::apiResource('classes', ClassController::class)->except(['index', 'show']);
-        Route::apiResource('candidates', CandidateController::class)->except(['index', 'show']);
+        // Classes CRUD (kecuali index & show yang public)
+        Route::post('/classes', [ClassController::class, 'store']);
+        Route::put('/classes/{class}', [ClassController::class, 'update']);
+        Route::delete('/classes/{class}', [ClassController::class, 'destroy']);
+
+        // Candidates CRUD (kecuali index & show yang public)
+        Route::post('/candidates', [CandidateController::class, 'store']);
+        Route::put('/candidates/{candidate}', [CandidateController::class, 'update']);
+        Route::delete('/candidates/{candidate}', [CandidateController::class, 'destroy']);
+
+        // Users management
         Route::get('/users', [UserController::class, 'index']);
     });
 });
@@ -171,24 +268,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 ---
 
-## Summary
+## Verification
 
-| Item                | Count |
-| ------------------- | ----- |
-| New Migrations      | 3     |
-| Modified Migrations | 1     |
-| New Models          | 3     |
-| Modified Models     | 1     |
-| New Middleware      | 1     |
-| New Controllers     | 5     |
-| Total API Endpoints | 16    |
+```bash
+# Run migrations
+php artisan migrate
 
----
-
-## Verification Plan
-
-1. **Database**: `php artisan migrate:fresh` - pastikan semua migration berjalan
-2. **Auth Flow**: Register → Login → Logout
-3. **Admin CRUD**: Create/Update/Delete classes & candidates
-4. **Voting Flow**: Submit vote → Check status → View results
-5. **Access Control**: Voter tidak bisa akses admin routes
+# Test endpoints
+php artisan serve
+```

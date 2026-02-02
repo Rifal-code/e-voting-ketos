@@ -168,6 +168,7 @@ Menyimpan data pengguna/pemilih.
 | `email_verified_at` | timestamp    | Waktu verifikasi email          |
 | `password`          | varchar(255) | Password (hashed)               |
 | `class_id`          | bigint       | Foreign key ke tabel `classes`  |
+| `role`              | enum         | Role user: `admin` atau `voter` |
 | `remember_token`    | varchar(100) | Token untuk fitur "remember me" |
 | `created_at`        | timestamp    | Waktu pembuatan                 |
 | `updated_at`        | timestamp    | Waktu update terakhir           |
@@ -195,6 +196,7 @@ Menyimpan data suara/pilihan pengguna.
 └─────────────┘       │ email       │       │ user_id (FK)│   │
                       │ password    │       └─────────────┘   │
                       │ class_id(FK)│                         │
+                      │ role        │                         │
                       └─────────────┘                         │
                                                               │
                       ┌─────────────┐                         │
