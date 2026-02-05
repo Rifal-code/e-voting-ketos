@@ -17,7 +17,7 @@
 <body class="bg-gray-50">
     @include('partials.admin-navbar')
 
-    <main class="p-5">@yield('content')
+    <main class="p-5 min-h-screen">@yield('content')
         @if (session('success'))
             <script>
                 Swal.fire({
@@ -45,9 +45,9 @@
         @if (session('error'))
             <script>
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: "{{ session('success') }}",
+                    icon: 'error',
+                    title: 'Error!',
+                    text: "{{ session('error') }}",
                     showConfirmButton: false,
                     timer: 2000
                 })

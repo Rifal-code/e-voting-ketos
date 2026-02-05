@@ -1,4 +1,5 @@
-@extends('layouts.pages') @section('content')
+@extends('layouts.admin')
+@section('content')
     <div class="w-sm flex flex-col p-5 mx-3 gap-5 lg:mx-auto lg:w-lg">
         <div class="mx-auto text-center">
             <div class="p-5 rounded-lg bg-[#DB2424] mx-auto text-white w-fit">
@@ -10,50 +11,28 @@
                     <path d="M22 19H2"></path>
                 </svg>
             </div>
-            <h1 class="font-black text-2xl my-2">Masuk</h1>
-            <p class="text-gray-600">Masuk untuk memberikan suara Anda</p>
+            <h1 class="font-black text-2xl my-2">Tambah</h1>
+            <p class="text-gray-600">Tambah Kandidat Ketua OSIS</p>
         </div>
 
-        <form action="{{ route('login.store') }}" method="POST"
+        <form action="{{ route('admin.candidates.store') }}" method="POST"
             class="p-5 rounded-xl shadow-xl bg-white flex flex-col gap-5">
             @csrf
             <div>
-                <h1 class="font-black text-xl my-2">Selamat Datang</h1>
-                <p class="text-gray-600">Masukkan email dan password Anda</p>
+                <h1 class="font-black text-xl my-2">Tambah Kandidat</h1>
+                <p class="text-gray-600">Masukkan data kandidat baru</p>
             </div>
 
             <div>
-                <label class="text-sm" for="email">Email</label>
-                <input type="email" name="email" placeholder="nama@gmail.com"
+                <label class="text-sm" for="name">Nama Lengkap</label>
+                <input type="text" name="name" placeholder="Nama Lengkap" required
                     class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md" />
-                @error('email')
-                    <script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: "{{ $message }}",
-                            showConfirmButton: false,
-                            timer: 2000
-                        })
-                    </script>
-                @enderror
             </div>
-            <div>
+            {{-- <div>
                 <label class="text-sm" for="password">Password</label>
                 <input type="password" name="password" placeholder="••••••••"
                     class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md" />
-                @error('password')
-                    <script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: "{{ $message }}",
-                            showConfirmButton: false,
-                            timer: 2000
-                        })
-                    </script>
-                @enderror
-            </div>
+            </div> --}}
 
             <button type="submit"
                 class="py-3 w-full rounded-xl bg-[#DB2424] hover:bg-[#DB2424]/80 transition-colors text-white flex items-center font-semibold justify-center">
@@ -63,11 +42,10 @@
                     <path d="M5 12h14"></path>
                     <path d="m12 5 7 7-7 7"></path>
                 </svg>
-                Masuk
+                Tambah Kandidat
             </button>
 
-            <a href="{{ route('register') }}" class="text-center text-gray-600">Belum punya akun?
-                <span class="text-[#DB2424] hover:underline">Daftar Sekarang</span></a>
+
         </form>
     </div>
 @endsection

@@ -39,7 +39,7 @@
             <div>
                 <label class="text-sm font-semibold" for="class_id">Kelas</label>
                 <select name="class_id"
-                    class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md @error('class_id') border-red-500 @enderror">
+                    class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md @error('class_id') @enderror">
                     <option value="" disabled selected>Pilih Kelas</option>
                     @foreach ($classes as $class)
                         <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>

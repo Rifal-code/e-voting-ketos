@@ -31,7 +31,7 @@
         @if (Route::has('login'))
             <div>
                 @auth
-                    <a href="{{ route('login') }}"
+                    <a href="{{ route('home') }}"
                         class="py-2 px-5 rounded-lg bg-[#DB2424] hover:bg-[#DB2424]/80 text-white font-semibold">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}"

@@ -33,11 +33,16 @@ class User extends Authenticatable
     ];
 
     public function schoolClass() : BelongsTo {
-        return $this->belongsTo(SchoolClass::class);
+        return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 
     public function votes(): HasOne {
         return $this->hasOne(Vote::class);
+    }
+    
+
+    public function hasVoted() {
+        return $this->votes()->exists();
     }
 
     /**

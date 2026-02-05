@@ -63,7 +63,7 @@
     </div>
 
     <div class="mx-3 flex flex-col md:flex-row items-center justify-center gap-4">
-        <a href="{{ route('dashboard.candidates') }}"
+        <a href="{{ route('admin.candidates') }}"
             class="flex flex-1 w-full group hover:shadow-lg transition-all items-center justify-between p-5 bg-white rounded-lg border border-gray-300">
             <div class="flex items-center gap-3">
                 <span class="p-5 rounded-lg bg-[#DB2424] text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24"
@@ -92,7 +92,8 @@
                 </svg>
             </span>
         </a>
-        <a href=""
+
+        <a href="{{ route('admin.classes') }}"
             class="flex flex-1 w-full group hover:shadow-lg transition-all items-center justify-between p-5 bg-white rounded-lg border border-gray-300">
             <div class="flex items-center gap-3">
                 <span class="p-5 rounded-lg bg-blue-400 text-white"><svg xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +126,7 @@
     </div>
 
     <div class="mx-3 flex flex-col items-center justify-center md:flex-row gap-4 my-5">
-        <a href=""
+        <a href="{{ route('admin.users') }}"
             class="flex flex-1 w-full group hover:shadow-lg transition-all items-center justify-between p-5 bg-white rounded-lg border border-gray-300">
             <div class="flex items-center gap-3">
                 <span class="p-5 rounded-lg bg-green-400 text-white"><svg xmlns="http://www.w3.org/2000/svg"

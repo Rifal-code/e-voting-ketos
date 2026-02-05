@@ -7,10 +7,17 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Models\SchoolClass;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+       public function showRegister() {
+            $classes = SchoolClass::all();
+
+            return view('auth.register', compact('classes'));
+       } 
+
     public function register(RegisterRequest $request) {
         $data = $request->validated();
        
@@ -25,7 +32,11 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-      return redirect()->route('dashboard')->with('success', 'Registrasi berhasil dan Anda telah masuk.');
+      return redirect()->route('home')->with('success', 'Registrasi berhasil dan Anda telah masuk.');
+    }
+
+    public function showLogin() {
+        return view('auth.login');
     }
 
     public function login(LoginRequest $request) {
@@ -34,7 +45,7 @@ class AuthController extends Controller
         if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/dashboard')->with('success', 'Login berhasil');
+            return redirect()->route('home')->with('success', 'Login berhasil');
         }
 
         return back()->withErrors([
@@ -48,5 +59,15 @@ class AuthController extends Controller
        $request->session()->invalidate();
 
        return redirect('/')->with('success', 'Logout berhasil');
+    }
+
+    public function home() {
+        $user = Auth::user();
+
+        if($user?->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+          return redirect()->route('voter.dashboard');
     }
 }
