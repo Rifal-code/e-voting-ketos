@@ -1,0 +1,30 @@
+<footer
+    class="p-3 z-50 bottom-0 border-b border-b-gray-300 bg-white flex flex-col justify-center items-center lg:flex-row lg:justify-between"
+>
+    <a href="/" class="flex items-center gap-4">
+        <span class="p-1 rounded-lg bg-[#DB2424] text-white">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-vote h-6 w-6 text-primary-foreground"
+            >
+                <path d="m9 12 2 2 4-4"></path>
+                <path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7Z"></path>
+                <path d="M22 19H2"></path>
+            </svg>
+        </span>
+        <span class="text-md font-bold">E-VOTING OSIS</span>
+    </a>
+
+    <small class="text-gray-600"
+        >Dibuat dengan ❤ untuk pemilihan Ketua OSIS</small
+    >
+    <small class="text-gray-600">© 2026 Semua Hak Dilindungi</small>
+</footer>
