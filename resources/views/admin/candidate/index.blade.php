@@ -17,9 +17,10 @@
     </div>
 
     <div
-        class="my-10 flex flex-col md:flex-row flex-wrap items-center gap-5 p-5 rounded-lg bg-white border border-gray-200">
+        class="my-10 flex items-stretch flex-col md:flex-row flex-wrap gap-5 p-5 rounded-lg bg-white border border-gray-200">
         @foreach ($candidates as $candidate)
-            <div class="bg-white rounded-lg overflow-hidden border border-gray-300 shadow-sm w-full md:flex-1 md:min-w-xs">
+            <div
+                class="bg-white rounded-lg overflow-hidden border border-gray-300 shadow-sm w-full md:flex-1 md:min-w-md max-w-md">
                 <div class="w-full relative bg-gray-200 h-60 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -31,12 +32,14 @@
                     </svg>
 
                     <span
-                        class="h-10 w-10 absolute top-3 left-3 text-2xl flex items-center justify-center font-semibold text-white bg-red-600 rounded-full">1</span>
+                        class="h-10 w-10 absolute top-3 left-3 text-2xl flex items-center justify-center font-semibold text-white bg-red-600 rounded-full">{{ $candidate->nomor }}</span>
                 </div>
-                <div class="p-5">
+                <div class="p-5 flex flex-col gap-2 justify-between">
                     <h1 class="text-xl font-semibold">{{ $candidate->name }}</h1>
                     <span class="text-red-600">Visi</span>
-                    <p class="text-gray-600">Memajukan Sekolah sejauh 5 meter</p>
+                    <p class="text-gray-600">{{ $candidate->visi }}</p>
+                    <span class="text-red-600">Misi</span>
+                    <p class="text-gray-600">{{ $candidate->misi }}</p>
 
                     <div class="w-full flex gap-3 mt-6">
                         <a href="{{ route('admin.candidates.edit', $candidate->id) }}"

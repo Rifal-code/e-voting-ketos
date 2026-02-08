@@ -8,7 +8,7 @@
     <div class="flex flex-col md:flex-row items-center justify-center mx-4 gap-5 my-8">
         <div class="p-5 rounded-lg w-full flex-1 bg-white border border-gray-300 shadow-sm">
             <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-lg">Total Kandidat</h3>
+                <h3 class="font-semibold text-lg text-red-600">Total Kandidat</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-users h-4 w-4 text-primary text-[#DB2424]">
@@ -18,11 +18,11 @@
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold">0</h1>
+            <h1 class="text-3xl font-bold">{{ $totalCandidates }}</h1>
         </div>
         <div class="p-5 rounded-lg w-full flex-1 bg-white border border-gray-300 shadow-sm">
             <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-lg">Total Siswa</h3>
+                <h3 class="font-semibold text-lg text-blue-400">Total Siswa</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-user-plus h-4 w-4 text-accent text-blue-400">
@@ -32,11 +32,11 @@
                     <line x1="22" x2="16" y1="11" y2="11"></line>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold">0</h1>
+            <h1 class="text-3xl font-bold">{{ $totalStudents }}</h1>
         </div>
         <div class="p-5 rounded-lg w-full flex-1 bg-white border border-gray-300 shadow-sm">
             <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-lg">Total Suara</h3>
+                <h3 class="font-semibold text-lg text-green-300">Total Suara</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-vote h-4 w-4 text-success text-green-300">
@@ -45,12 +45,12 @@
                     <path d="M22 19H2"></path>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold">0</h1>
+            <h1 class="text-3xl font-bold">{{ $totalVotes }}</h1>
         </div>
 
         <div class="p-5 rounded-lg w-full flex-1 bg-white border border-gray-300 shadow-sm">
             <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-lg">Total Partisipasi</h3>
+                <h3 class="font-semibold text-lg text-orange-300">Total Partisipasi</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-trending-up h-4 w-4 text-warning text-orange-300">
@@ -58,7 +58,7 @@
                     <polyline points="16 7 22 7 22 13"></polyline>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold">0%</h1>
+            <h1 class="text-3xl font-bold">{{ $totalParticipation }}%</h1>
         </div>
     </div>
 
@@ -140,9 +140,9 @@
                     </svg></span>
                 <div>
                     <h1 class="text-2xl font-bold group-hover:text-green-400 transition-colors">
-                        Kelola Siswa
+                        Kelola User
                     </h1>
-                    <p class="text-gray-600">Tambah, edit, dan hapus Siswa</p>
+                    <p class="text-gray-600">Tambah, edit, dan hapus User</p>
                 </div>
             </div>
 
@@ -156,7 +156,7 @@
             </span>
         </a>
 
-        <a href=""
+        <a href="{{ route('results') }}"
             class="flex flex-1 w-full group hover:shadow-lg transition-all items-center justify-between p-5 bg-white rounded-lg border border-gray-300">
             <div class="flex items-center gap-3">
                 <span class="p-5 rounded-lg bg-orange-400 text-white"><svg xmlns="http://www.w3.org/2000/svg"

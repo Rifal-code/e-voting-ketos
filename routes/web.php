@@ -1,16 +1,16 @@
 <?php
-
-use App\Models\Candidate;
-use App\Models\SchoolClass;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Voter\VoteController;
 use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\CandidateController;
+use App\Http\Controllers\Admin\DashboardController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.index');
 });
+Route::get('/results', [VoteController::class, 'results'])->name('results');
 
 Route::middleware('guest')->group(function () {
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -29,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('home', [AuthController::class, 'home'])->name('home');
 
     Route::prefix('admin')->middleware('role:admin')->group(function () {
-        Route::get('/', fn () => view('admin.dashboard'))->name('admin.dashboard');
+        Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
         Route::get('/candidates', [CandidateController::class, 'index'])->name('admin.candidates');
         Route::get('/candidates/create', [CandidateController::class, 'create'])->name('admin.candidates.create');
@@ -46,14 +46,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/classes/delete/{class}', [ClassController::class, 'destroy'])->name('admin.classes.destroy');
 
         Route::get('/users', [UserController::class, 'index'])->name('admin.users');
+        Route::get('/users/create', [UserController::class, 'create'])->name('admin.users.create');
+        Route::post('/users/create', [UserController::class, 'store'])->name('admin.users.store');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     });
 
     Route::prefix('voter')->middleware('role:voter')->group(function() {
-        Route::get('/', fn () => view('voter.dashboard'))->name('voter.dashboard');
+        Route::get('/', [VoteController::class, 'index'])->name('voter.dashboard');
+         Route::post('/voter/{candidate}/vote', [VoteController::class, 'store'])->name('voter.store');
     });
 });
 
-Route::get('/results', function () {
-    return view('pages.results');
-})->name('results');

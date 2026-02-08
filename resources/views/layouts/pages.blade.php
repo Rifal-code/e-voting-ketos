@@ -16,7 +16,7 @@
 
 <body class="bg-[#FAFAFA] w-full">
     @include('partials.page-navbar')
-    <main>
+    <main class="min-h-screen">
         @yield('content')
         @if (session('success'))
             <script>

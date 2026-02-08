@@ -16,28 +16,37 @@
             <span class="text-2xl">+</span> Tambah Kelas</a>
     </div>
 
-    <div class="rounded-xl bg-white shadow-xs border border-gray-200 divide-y divide-gray-200">
-        <div class="w-full flex justify-between items-center p-3 hover:bg-gray-100 transition-colors">
-            <h3 class="text-md font-medium text-gray-600">Nama Kelas</h3>
-            <h3 class="text-md font-medium text-gray-600">Aksi</h3>
-        </div>
+    <div class="rounded-xl bg-white shadow-xs border border-gray-200 overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead class="border-b border-b-gray-200 hover:bg-gray-100 transition-colors">
+                <tr>
+                    <th class="p-3 text-gray-600 font-medium">Nama Kelas</th>
+                    <th class="p-3 text-gray-600 font-medium text-right">Aksi</th>
+                </tr>
+            </thead>
 
-        @foreach ($classes as $class)
-            <div class="w-full flex justify-between items-center p-3 hover:bg-gray-100 transition-colors">
-                <h3 class="text-md font-medium text-gray-800">{{ $class->name }}</h3>
-                <div class="flex gap-2">
-                    <a href="{{ route('admin.classes.edit', $class->id) }}"
-                        class="text-white bg-blue-500 hover:bg-blue-600 rounded-lg py-1 px-3 text-sm font-medium">Edit</a>
+            <tbody>
+                @foreach ($classes as $class)
+                    <tr class="border-b relative border-b-gray-200 hover:bg-gray-100 transition-colors">
+                        <td class="p-3">{{ $class->name }}</td>
+                        <td class="p-3 right-0 absolute">
+                            <div class="flex gap-2">
+                                <a href="{{ route('admin.classes.edit', $class->id) }}"
+                                    class="text-white bg-blue-500 hover:bg-blue-600 rounded-lg py-1 px-3 text-sm font-medium">Edit</a>
 
-                    <form action="{{ route('admin.classes.destroy', $class->id) }}" method="POST"
-                        onsubmit="return confirm('Yakin hapus Kelas ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="text-white bg-red-500 hover:bg-red-600 rounded-lg font-medium py-1 px-3 text-sm">Hapus</button>
-                    </form>
-                </div>
-            </div>
-        @endforeach
+                                <form action="{{ route('admin.classes.destroy', $class->id) }}" method="POST"
+                                    onsubmit="return confirm('Yakin hapus Kelas ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="text-white bg-red-500 hover:bg-red-600 rounded-lg font-medium py-1 px-3 text-sm">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+
+            </tbody>
+        </table>
     </div>
 @endsection

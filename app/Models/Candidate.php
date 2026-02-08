@@ -10,7 +10,7 @@ class Candidate extends Model
 {
     protected $table = 'candidates';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'nomor', 'misi', 'visi'];
 
     public function votes(): HasMany {
         return $this->hasMany(Vote::class);

@@ -17,7 +17,7 @@
 <body class="bg-gray-50">
     @include('partials.voter-navbar')
 
-    <main class="p-5">@yield('content')
+    <main class="p-5 min-h-screen">@yield('content')
         @if (session('success'))
             <script>
                 Swal.fire({

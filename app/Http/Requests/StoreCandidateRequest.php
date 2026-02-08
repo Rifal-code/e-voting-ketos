@@ -22,7 +22,10 @@ class StoreCandidateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255']
+            'name' => ['required', 'string', 'max:255'],    
+            'nomor' => ['required', 'string', 'max:255'],
+            'misi' => ['required', 'string', 'max:255'],
+            'visi' => ['required', 'string', 'max:255']
         ];
     }
 }

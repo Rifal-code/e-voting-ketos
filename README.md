@@ -70,7 +70,7 @@ php artisan key:generate
 ```
 
 Edit file `.env` dan sesuaikan konfigurasi database:
-
+n
 ```env
 APP_NAME="E-Voting"
 APP_ENV=local

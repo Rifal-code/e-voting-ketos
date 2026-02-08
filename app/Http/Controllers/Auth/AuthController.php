@@ -19,20 +19,19 @@ class AuthController extends Controller
        } 
 
     public function register(RegisterRequest $request) {
-        $data = $request->validated();
-       
+       $data = $request->validated();
 
-        $user = User::create([
+       $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'class_id' => $data['class_id'],
             'role' => $request->role ?? 'voter'
-        ]);
+       ]);
 
-        Auth::login($user);
+       Auth::login($user);
 
-      return redirect()->route('home')->with('success', 'Registrasi berhasil dan Anda telah masuk.');
+       return redirect()->route('home')->with('success', 'Berhasil register dan anda sudah masuk');
     }
 
     public function showLogin() {
@@ -40,17 +39,17 @@ class AuthController extends Controller
     }
 
     public function login(LoginRequest $request) {
-        $credentials = $request->only('email', 'password');
+      $credentials = $request->only('email', 'password');
 
-        if(Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+      if(Auth::attempt($credentials)) {
+        $request->session()->regenerate();
 
-            return redirect()->route('home')->with('success', 'Login berhasil');
-        }
+        return redirect()->route('home')->with('success', 'Berhasil Login');
+      }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+      return redirect()->back()->withErrors([
+            'email' => 'Emal atau password salah'
+      ],403);
     }
 
     public function logout(Request $request) {

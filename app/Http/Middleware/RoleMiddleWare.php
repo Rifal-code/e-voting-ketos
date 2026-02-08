@@ -16,10 +16,10 @@ class RoleMiddleWare
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        $user = Auth::user();
+       $user = Auth::user();
 
-        if(! $user || $user->role !== $role) {
-            abort(403, 'Anda tidak punya Akses');
+        if(!$user || $user->role !== $role) {
+            abort(403, 'Anda tidak punya akses');
         }
 
         return $next($request);

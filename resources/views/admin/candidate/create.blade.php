@@ -28,11 +28,26 @@
                 <input type="text" name="name" placeholder="Nama Lengkap" required
                     class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md" />
             </div>
-            {{-- <div>
-                <label class="text-sm" for="password">Password</label>
-                <input type="password" name="password" placeholder="••••••••"
+
+
+            <div>
+                <label class="text-sm" for="nomor">Nomor Kandidat</label>
+                <input type="number" name="nomor" placeholder="Nomor Kandidat" required
                     class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md" />
-            </div> --}}
+            </div>
+
+            <div>
+                <label class="text-sm" for="visi">Visi</label>
+                <input type="text" name="visi" placeholder="Visi Kandidat" required
+                    class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md" />
+            </div>
+
+            <div>
+                <label class="text-sm" for="misi">Misi </label>
+                <textarea name="misi" placeholder="Misi Kandidat" required
+                    class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md" cols="30" rows="5"></textarea>
+            </div>
+
 
             <button type="submit"
                 class="py-3 w-full rounded-xl bg-[#DB2424] hover:bg-[#DB2424]/80 transition-colors text-white flex items-center font-semibold justify-center">

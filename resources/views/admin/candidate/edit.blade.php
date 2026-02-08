@@ -30,11 +30,26 @@
                     class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md"
                     value="{{ old('name', $candidate->name) }}" />
             </div>
-            {{-- <div>
-                <label class="text-sm" for="password">Password</label>
-                <input type="password" name="password" placeholder="••••••••"
-                    class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md" />
-            </div> --}}
+
+            <div>
+                <label class="text-sm" for="nomor">Nomor Kandidat</label>
+                <input type="number" name="nomor" placeholder="Nomor Kandidat" required
+                    class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md"
+                    value="{{ old('nomor', $candidate->nomor) }}" />
+            </div>
+
+            <div>
+                <label class="text-sm" for="visi">Visi</label>
+                <input type="text" name="visi" placeholder="Visi Kandidat" required
+                    class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md"
+                    value="{{ old('visi', $candidate->visi) }}" />
+            </div>
+
+            <div>
+                <label class="text-sm" for="misi">Misi </label>
+                <textarea name="misi" placeholder="Misi Kandidat" required
+                    class="w-full bg-[#FAFAFA] p-2 border border-gray-200 rounded-md" cols="30" rows="5">{{ old('misi', $candidate->misi) }}</textarea>
+            </div>
 
             <button type="submit"
                 class="py-3 w-full rounded-xl bg-[#DB2424] hover:bg-[#DB2424]/80 transition-colors text-white flex items-center font-semibold justify-center">

@@ -17,6 +17,9 @@ class CandidateResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'nomor' => $this->nomor,
+            'misi' => $this->misi,
+            'visi' => $this->visi,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

@@ -53,7 +53,8 @@ class VoteController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'has_voted' => (bool)$vote,
+
+            'has_voted' => (bool)$vote,
                 'vote' => $vote ? new VoteResource($vote) : null
             ]
         ]);
